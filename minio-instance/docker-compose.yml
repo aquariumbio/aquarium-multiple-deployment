@@ -1,0 +1,14 @@
+version: "3.5"
+services:
+  s3:
+    image: minio/minio:latest
+    volumes:
+      - ./data/s3/data:/data
+      - ./data/s3/config:/root/.minio
+    command: server /data
+    expose:
+      - "9000"
+    environment:
+      MINIO_ACCESS_KEY: ${S3_ID}
+      MINIO_SECRET_KEY: ${S3_SECRET_ACCESS_KEY}
+      MINIO_REGION: ${S3_REGION} 
