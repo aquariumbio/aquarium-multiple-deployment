@@ -5,6 +5,13 @@ timezone=`curl https://ipapi.co/timezone`
 ENV_FILE=.env
 
 if [[ ! -f "$ENV_FILE" ]]; then
+    # TODO: set APP_CNAME=aq-lab_name.domain
+    # TODO: set APP_PUBLIC_PORT
+    # TODO: set S3_PUBLIC_PORT
+    # TODO: set VIRTUAL_HOST
+    # TODO: set VIRTUAL_PORT
+    # TODO: set LETSENCRYPT_HOST
+    # TODO: set LETSENCRYPT_EMAIL
     echo 'DB_NAME=production' >> $ENV_FILE 
     echo 'DB_USER=aquarium' >> $ENV_FILE
     echo 'DB_PASSWORD=aSecretAquarium' >> $ENV_FILE
