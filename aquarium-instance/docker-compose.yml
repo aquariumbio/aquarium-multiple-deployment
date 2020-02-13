@@ -1,4 +1,4 @@
-# Base docker-compose file for aquarium
+# docker-compose file for aquarium
 #
 # Defines services for Aquarium, Krill, database, and S3.  Uses Docker network
 # address translation, and containers for MySQL, and the Minio S3 server.
@@ -33,12 +33,15 @@ services:
       - public:/aquarium/public
       - logs:/aquarium/log
       - shared:/aquarium/shared
+      - ./config/instance.yml:/aquarium/config/instance.yml
+      - ./config/lab-eula.yml:/aquarium/config/user_agreement.yml
     networks:
       - aquarium_net
     expose:
       - "3000"
     depends_on:
       - db
+      - s3
     cap_add:
       - NET_ADMIN
     sysctls:
@@ -79,8 +82,25 @@ services:
     sysctls:
       - net.ipv4.conf.all.route_localnet=1
 
+  s3:
+    image: minio/minio:latest
+    volumes:
+      - ./data/s3/data:/data
+      - ./data/s3/config:/root/.minio
+    command: server /data
+    expose:
+      - "9000"
+    environment:
+      MINIO_ACCESS_KEY: ${S3_ID}
+      MINIO_SECRET_KEY: ${S3_SECRET_ACCESS_KEY}
+      MINIO_REGION: ${S3_REGION}
+    networks:
+      - aquarium_net
+
   createbucket:
     image: minio/mc:latest
+    depends_on:
+      - s3
     entrypoint: >
       /bin/sh -c "
       while ! nc -z s3 9000; do
@@ -97,13 +117,20 @@ services:
   web:
     image: nginx:stable-alpine
     ports:
-      - "80:80"
-      - "9000:9000"
+      - "${APP_PUBLIC_PORT}:80"
+      # TODO: not sure this works with virtual host
+      - "${S3_PUBLIC_PORT}:9000"
     networks:
       - aquarium_net
     depends_on:
       - app
+      - s3
       - createbucket
+    # environment:
+    #  - VIRTUAL_HOST=${APP_CNAME}
+    #  - VIRTUAL_PORT=${APP_PUBLIC_PORT}
+    #  - LETSENSCRYPT_HOST=${APP_CNAME}
+    #  - LETSENSCRYPT_EMAIL=${LETSENSCRIPT_ADMIN_EMAIL}
     volumes:
       - public:/aquarium/public
       - logs:/aquarium/log
