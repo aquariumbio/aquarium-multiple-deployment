@@ -1,0 +1,36 @@
+version: "3.5"
+services:
+  nginx-proxy:
+    user: root
+    image: jwilder/nginx-proxy
+    volumes:
+      - ./config/certs:/etc/nginx/certs:rw
+      - ./config/htpasswd:/etc/nginx/htpasswd:rw
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    expose:
+      - "80"
+      - "443"
+    restart_policy: always
+    networks:
+      - name: dockernet
+    labels:
+      role: proxy
+    
+  letsencrypt-nginx-proxy-companion:
+    user: root
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - ./config/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart_policy: always
+    networks:
+      - name: dockernet
+    labels:
+      role: proxy
