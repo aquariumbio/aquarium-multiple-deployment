@@ -96,8 +96,8 @@ services:
       MINIO_REGION: ${S3_REGION}
       VIRTUAL_HOST: ${S3_CNAME}
       VIRTUAL_PORT: ${S3_PUBLIC_PORT}
-    #  LETSENSCRYPT_HOST=${S3_CNAME}
-    #  LETSENSCRYPT_EMAIL=${LETSENSCRIPT_ADMIN_EMAIL}
+      LETSENSCRYPT_HOST: ${S3_CNAME}
+      LETSENSCRYPT_EMAIL: ${LETSENCRYPT_ADMIN_EMAIL}
     networks:
       - aquarium_net
 
@@ -123,26 +123,28 @@ services:
     ports:
       - "${APP_PUBLIC_PORT}:80"
       # TODO: not sure this works with virtual host
-      - "${S3_PUBLIC_PORT}:9000"
+      # - "${S3_PUBLIC_PORT}:9000"
     networks:
       - aquarium_net
+      - deploy_net
     depends_on:
       - app
       - s3
       - createbucket
     environment:
-      VIRTUAL_HOST=${APP_CNAME}
-      VIRTUAL_PORT=${APP_PUBLIC_PORT}
-    #  - LETSENSCRYPT_HOST=${APP_CNAME}
-    #  - LETSENSCRYPT_EMAIL=${LETSENSCRIPT_ADMIN_EMAIL}
+      VIRTUAL_HOST: ${APP_CNAME}
+      VIRTUAL_PORT: ${APP_PUBLIC_PORT}
+      LETSENSCRYPT_HOST: ${APP_CNAME}
+      LETSENSCRYPT_EMAIL: ${LETSENCRYPT_ADMIN_EMAIL}
     volumes:
       - public:/aquarium/public
       - logs:/aquarium/log
       - shared:/aquarium/shared
-      - ./config/nginx.production.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./config/nginx.aquarium.conf:/etc/nginx/conf.d/default.conf:ro
 
 networks:
   aquarium_net:
+  deploy_net:
     external:
       name: dockernet
 

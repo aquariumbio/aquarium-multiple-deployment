@@ -15,22 +15,27 @@ services:
     expose:
       - "80"
       - "443"
-    restart_policy: always
+    restart: always
     networks:
-      - name: dockernet
+      - aquarium_net
     labels:
       role: proxy
     
-  letsencrypt-nginx-proxy-companion:
-    user: root
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - ./config/certs:/etc/nginx/certs:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart_policy: always
-    networks:
-      - name: dockernet
-    labels:
-      role: proxy
+  #letsencrypt-nginx-proxy-companion:
+  #  user: root
+  #  image: jrcs/letsencrypt-nginx-proxy-companion
+  #  volumes_from:
+  #    - nginx-proxy
+  #  volumes:
+  #    - ./config/certs:/etc/nginx/certs:rw
+  #    - /var/run/docker.sock:/var/run/docker.sock:ro
+  #  restart_policy: always
+  #  networks:
+  #    - aquarium_net
+  #  labels:
+  #    role: proxy
+
+networks:
+  aquarium_net:
+    external:
+      name: dockernet
