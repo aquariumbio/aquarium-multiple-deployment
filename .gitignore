@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# except for 
+!/aquarium-instance
+!/docs
+!/nginx-proxy
+!.gitignore
+!license.md
+!README.md
+
