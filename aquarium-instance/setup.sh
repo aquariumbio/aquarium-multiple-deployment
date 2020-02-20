@@ -4,14 +4,13 @@ s3_key=`openssl rand -hex 40`
 timezone=`curl https://ipapi.co/timezone`
 ENV_FILE=.env
 
+# TODO: set CNAMEs PORT and letsencrypt email
 if [[ ! -f "$ENV_FILE" ]]; then
-    # TODO: set APP_CNAME=aq-lab_name.domain
-    # TODO: set APP_PUBLIC_PORT
-    # TODO: set S3_PUBLIC_PORT
-    # TODO: set VIRTUAL_HOST
-    # TODO: set VIRTUAL_PORT
-    # TODO: set LETSENCRYPT_HOST
-    # TODO: set LETSENCRYPT_EMAIL
+    echo 'APP_CNAME='$1 >> $ENV_FILE
+    echo 'APP_PUBLIC_PORT='$2 >> $ENV_FILE
+    echo 'S3_CNAME='$3 >> $ENV_FILE
+    echo 'S3_PUBLIC_PORT='$4 >> $ENV_FILE
+    echo 'LETSENCRYPT_ADMIN_EMAIL='$5 >> $ENV_FILE
     echo 'DB_NAME=production' >> $ENV_FILE 
     echo 'DB_USER=aquarium' >> $ENV_FILE
     echo 'DB_PASSWORD=aSecretAquarium' >> $ENV_FILE

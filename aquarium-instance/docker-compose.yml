@@ -94,6 +94,10 @@ services:
       MINIO_ACCESS_KEY: ${S3_ID}
       MINIO_SECRET_KEY: ${S3_SECRET_ACCESS_KEY}
       MINIO_REGION: ${S3_REGION}
+      VIRTUAL_HOST: ${S3_CNAME}
+      VIRTUAL_PORT: ${S3_PUBLIC_PORT}
+    #  LETSENSCRYPT_HOST=${S3_CNAME}
+    #  LETSENSCRYPT_EMAIL=${LETSENSCRIPT_ADMIN_EMAIL}
     networks:
       - aquarium_net
 
@@ -126,9 +130,9 @@ services:
       - app
       - s3
       - createbucket
-    # environment:
-    #  - VIRTUAL_HOST=${APP_CNAME}
-    #  - VIRTUAL_PORT=${APP_PUBLIC_PORT}
+    environment:
+      VIRTUAL_HOST=${APP_CNAME}
+      VIRTUAL_PORT=${APP_PUBLIC_PORT}
     #  - LETSENSCRYPT_HOST=${APP_CNAME}
     #  - LETSENSCRYPT_EMAIL=${LETSENSCRIPT_ADMIN_EMAIL}
     volumes:
@@ -139,6 +143,8 @@ services:
 
 networks:
   aquarium_net:
+    external:
+      name: dockernet
 
 volumes:
   public:

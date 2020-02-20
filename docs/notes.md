@@ -6,6 +6,8 @@ Though they use Ansible for building lab-specific configurations, and portainer 
 The directory aquarium-instance contains a generic configuration for a single lab instance.
 This is basically the same as the [aquarium-local](https://github.com/klavinslab/aquarium-local) configuration with minor (and  incomplete) tweaks related to nginx configuration.
 
+Anything that is broken is probably related to [nginx-proxy](https://github.com/jwilder/nginx-proxy)
+
 **changes are necessary to `setup.sh` and `docker-compose.yml` before this will work**
 
 ## (Intended) Steps for setting up a lab
