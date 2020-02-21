@@ -42,6 +42,7 @@ services:
     depends_on:
       - db
       - s3
+      - createbucket
     cap_add:
       - NET_ADMIN
     sysctls:
@@ -88,6 +89,8 @@ services:
       - ./data/s3/data:/data
       - ./data/s3/config:/root/.minio
     command: server /data
+    ports:
+      - "${S3_PUBLIC_PORT}:9000"
     expose:
       - "9000"
     environment:
@@ -100,6 +103,7 @@ services:
       LETSENSCRYPT_EMAIL: ${LETSENCRYPT_ADMIN_EMAIL}
     networks:
       - aquarium_net
+      - dockernet
 
   createbucket:
     image: minio/mc:latest
@@ -111,7 +115,7 @@ services:
         sleep 1;
       done;
       /usr/bin/mc config host add aqminio http://s3:9000 ${S3_ID} ${S3_SECRET_ACCESS_KEY};
-      /usr/bin/mc mb --region us-west-1 -p aqminio/images;
+      /usr/bin/mc mb --region ${S3_REGION} -p aqminio/images;
       /usr/bin/mc policy set download aqminio/images;
       exit 0;
       "
@@ -122,14 +126,11 @@ services:
     image: nginx:stable-alpine
     ports:
       - "${APP_PUBLIC_PORT}:80"
-      # TODO: not sure this works with virtual host
-      # - "${S3_PUBLIC_PORT}:9000"
     networks:
       - aquarium_net
       - deploy_net
     depends_on:
       - app
-      - s3
       - createbucket
     environment:
       VIRTUAL_HOST: ${APP_CNAME}
