@@ -1,11 +1,11 @@
 # deployment notes
 
-This setup is roughly based on the configuration for deploying Aquarium at TACC (UT Austin).
-Though they use Ansible for building lab-specific configurations, and portainer for running and managing docker containers.
+This configuration is inspired by the configuration for deploying Aquarium at TACC (UT Austin).
+The main difference is that TACC maintains a single instance of minio independent of Aquarium, and in this configuration each Aquarium instance has it's own instance of minio.
 
 The directory `aquarium-instance` contains a generic configuration for a single lab instance.
 This is basically the same as the [aquarium-local](https://github.com/klavinslab/aquarium-local) configuration with tweaks that allow use of [nginx-proxy](https://github.com/jwilder/nginx-proxy) to control traffic for multiple instances.
-Though this repo could also be used to bolt `https` onto the front of a single instance of Aquarium.
+This repo can also be used to bolt `https` onto the front of a single instance of Aquarium.
 
 ## Before you start
 
@@ -21,7 +21,7 @@ Though this repo could also be used to bolt `https` onto the front of a single i
    The default configuration uses Let's Encrypt, but it should be possible to use a different CA (see the [nginx-proxy](https://github.com/jwilder/nginx-proxy) readme).
    This will likely require changes to the configuration in the `nginx-proxy` directory.
 
-   Alternatively, you can disable `https` by commenting out the letsencrypt-nginx-proxy-companion service in `nginx-proxy/docker-compose.yml`.
+   Alternatively, you can disable `https` by commenting out the `letsencrypt-nginx-proxy-companion service` in `nginx-proxy/docker-compose.yml`.
 
 3. Select a port numbering scheme for the Aquarium and minio services so that both services for all labs will use unique ports.
    For instance, use successive numbers starting at 81 for Aquarium instances, and 9001 for minio.
@@ -30,11 +30,11 @@ Though this repo could also be used to bolt `https` onto the front of a single i
 
 ## Setting up Aquarium for a lab
 
-1. Choose the CNAMEs for the lab using the chosen scheme. 
+1. Choose the CNAMEs for the lab using the chosen scheme.
    The instructions below refer to the CNAME for Aquarium as `APP_NAME` and the one for the minio service as `S3_NAME`.
 
 2. Choose the ports for the services according to the chosen scheme.
-   The instructions use `APP_PORT` for the Aquarium service port, and `S3_PORT` for the minio service port.
+   The instructions below use `APP_PORT` for the Aquarium service port, and `S3_PORT` for the minio service port.
 
 3. Make a copy of the aquarium-instance directory for the lab
 
@@ -64,13 +64,17 @@ Though this repo could also be used to bolt `https` onto the front of a single i
    | S3_PUBLIC_PORT | port for lab minio service |
    | LETSENCRYPT_ADMIN_EMAIL | email address for Let's Encrypt |
 
+## Lab Customizations
 
+1. Set instance details in `$LAB_INSTANCE/config/instance.yml`.
+   You should at least set the value for `instance_name` to the name of the lab (e.g., `Klavins Lab`).
+   If the lab will send email to users, set `lab_email_address` to an address for the lab.
 
+   You can change `image_uri` to point at an image server, though minio is used by default.
 
-
-6. set instance details in `$LAB_INSTANCE/config/instance.yml`
-
-7. set the EULA for the lab (this is not for using Aquarium, but for how people use the lab) in `$LAB_INSTANCE/config/lab-eula.yml`
+2. Set the EULA for the lab in `$LAB_INSTANCE/config/lab-eula.yml`.
+   This is not the user agreement for using Aquarium, but for how people use the lab.
+   So, the content should be determined by the lab the Aquarium instance belongs to.
 
 ## Starting the proxy server
 
@@ -102,8 +106,3 @@ To shutdown the container
 ```bash
 docker-compose -p $LAB_INSTANCE down -v --remove-orphans
 ```
-
-
-
-
-
