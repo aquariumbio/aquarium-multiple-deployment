@@ -21,7 +21,7 @@ This repo can also be used to bolt `https` onto the front of a single instance o
    The default configuration uses Let's Encrypt, but it should be possible to use a different CA (see the [nginx-proxy](https://github.com/jwilder/nginx-proxy) readme).
    This will likely require changes to the configuration in the `nginx-proxy` directory.
 
-   Alternatively, you can disable `https` by commenting out the `letsencrypt-nginx-proxy-companion service` in `nginx-proxy/docker-compose.yml`.
+   Note that it is possible to start the `nginx-proxy` service without the `letsencrypt-nginx-proxy-companion` service (e.g., without https).
 
 3. Select a port numbering scheme for the Aquarium and minio services so that both services for all labs will use unique ports.
    For instance, use successive numbers starting at 81 for Aquarium instances, and 9001 for minio.
@@ -43,7 +43,7 @@ This repo can also be used to bolt `https` onto the front of a single instance o
    cp -r aquarium-instance $LAB_INSTANCE
    ```
 
-4. Set `LETSENCRYPT_ADMIN_EMAIL` to the admin email for your Let's Encrypt account, unless you've disabled `https`.
+4. Set `LETSENCRYPT_ADMIN_EMAIL` to the admin email for your Let's Encrypt account, unless you are not using `https`.
 
 5. run the `setup.sh` script
 
@@ -84,7 +84,14 @@ This repo can also be used to bolt `https` onto the front of a single instance o
    docker network create dockernet
    ```
 
-2. Start the `nginx-proxy` service
+2. To start the `nginx-proxy` service with the `letsencrypt-nginx-proxy-companion` service (e.g., using https)
+
+   ```bash
+   cd nginx-proxy
+   bash ./deploy.sh up -d
+   ```
+
+   To start `nginx-proxy` without https run the command
 
    ```bash
    cd nginx-proxy
