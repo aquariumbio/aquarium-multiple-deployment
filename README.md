@@ -1,4 +1,4 @@
-# aquarium-multiple-deployment
+# Aquarium Multi-Deployment
 
 Configuration for running multiple [Aquaria](https://github.com/klavinslab/aquarium) for multiple labs on a single machine.
 Can also be used to bolt `https` onto the front of a single instance of Aquarium.
