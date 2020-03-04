@@ -4,24 +4,25 @@ Configuration for running multiple [Aquaria](https://github.com/klavinslab/aquar
 
 Can also be used to bolt `https` onto the front of a single instance of Aquarium.
 
-Inspired by the configuration for deploying Aquarium at [TACC](https://www.tacc.utexas.edu/), built by @mwvaughn and @eriksf by modifying the Aquarium docker-compose files for use with Ansible, and with tweaks to use [nginx-proxy](https://github.com/jwilder/nginx-proxy).
+Inspired by the configuration for deploying Aquarium at [TACC](https://www.tacc.utexas.edu/), built by @mwvaughn and @eriksf who modified the Aquarium docker-compose files for use with Ansible, and made tweaks to use [nginx-proxy](https://github.com/jwilder/nginx-proxy).
 These tweaks make it possible to control traffic for multiple instances, and enable `https`.
 
 ## Resource Considerations
 
 We don't have direct experience with this configuration, but can extrapolate from the configuration we use for the UW BIOFAB.
 The BIOFAB is a moderately-sized cloud lab with at most 10 protocol batches being run simultaneously at any given time.
-Based on the hardware used by the BIOFAB, we expect that a 2.5 GHz processor with 8 cores and 16-32 GB RAM, with a fast 1 TB SSD would be sufficient for a single-core lab or multiple small labs with comparable bandwidth.
+Based on the hardware used by the BIOFAB, we expect that a 2.5 GHz processor with 8 cores and 16-32 GB RAM, with a fast 1 TB SSD would be sufficient for a core service lab or multiple small labs with comparable bandwidth.
 
 Note that we do not store NGS files in our object store.
 
 ## Before you start
 
 1. Decide on a naming scheme for host names.
-   
+
    Each Aquarium instance will need two cnames: one for Aquarium itself and the other for the minio object store service.
 
-   The convention used by the deployments at TACC, which this repo is based on, use the lab name with a prefix that indicates the service, for example, our lab would be `aq-klavins` and the prefix would `data-upload-klavins`.
+   The convention we have used with TACC is to use the lab name with the service "name" as prefix.
+   For example, the cname for the Aquarium instance for our lab would be `aq-klavins`, while the cname for the minio service would be `data-upload-klavins` or perhaps `s3-klavins`.
    In the typical configuration, users won't use the web interface for the `minio` service directly, so choosing a mnemonic name is not necessary except for your own sanity.
 
    *Use a domain that you or your organization own.*
@@ -87,8 +88,8 @@ Note that we do not store NGS files in our object store.
 
 2. Set the EULA for the lab in `$LAB_INSTANCE/config/lab-eula.yml`.
 
-   This is not the user agreement for using Aquarium, but for how people use your lab.
-   The content should be determined by the lab to which the Aquarium instance belongs.
+   This is not the user agreement for using Aquarium, but for how people use the lab.
+   So, the content should be determined by the lab to which the Aquarium instance belongs.
 
 ## Starting the proxy server
 
@@ -98,7 +99,7 @@ Note that we do not store NGS files in our object store.
    docker network create dockernet
    ```
 
-2. To start the `nginx-proxy` service with the `letsencrypt-nginx-proxy-companion` service (e.g., using https) run the command
+2. To start the `nginx-proxy` service with the `letsencrypt-nginx-proxy-companion` service (e.g., using https), run the command
 
    ```bash
    cd nginx-proxy
