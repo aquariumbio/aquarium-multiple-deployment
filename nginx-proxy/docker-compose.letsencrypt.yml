@@ -8,7 +8,7 @@ services:
     volumes:
       - ./config/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart_policy: always
+    restart: always
     networks:
       - deploy_net
     labels:
