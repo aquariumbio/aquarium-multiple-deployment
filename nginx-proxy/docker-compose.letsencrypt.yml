@@ -6,15 +6,28 @@ services:
     volumes_from:
       - nginx-proxy
     volumes:
-      - ./config/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - nginx_certs:/etc/nginx/certs
+      - nginx_vhost:/etc/nginx/vhost.d
+      - nginx_html:/usr/share/nginx/html
     restart: always
     networks:
       - deploy_net
     labels:
       role: proxy
 
+  nginx-proxy:
+    volumes:
+      - nginx_certs:/etc/nginx/certs
+      - nginx_vhost:/etc/nginx/vhost.d
+      - nginx_html:/usr/share/nginx/html
+
 networks:
   deploy_net:
     external:
     name: dockernet
+
+volumes:
+  nginx_certs:
+  nginx_vhost:
+  nginx_html:

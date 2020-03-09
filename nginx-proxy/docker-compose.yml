@@ -4,10 +4,7 @@ services:
     user: root
     image: jwilder/nginx-proxy
     volumes:
-      - ./config/certs:/etc/nginx/certs:rw
       - ./config/htpasswd:/etc/nginx/htpasswd:rw
-      - /etc/nginx/vhost.d
-      - /usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
     ports:
       - "80:80"
