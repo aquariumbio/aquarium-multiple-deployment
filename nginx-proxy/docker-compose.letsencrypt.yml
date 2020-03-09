@@ -3,8 +3,6 @@ services:
   letsencrypt-nginx-proxy-companion:
     user: root
     image: jrcs/letsencrypt-nginx-proxy-companion
-    volumes_from:
-      - nginx-proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - nginx_certs:/etc/nginx/certs
@@ -25,7 +23,7 @@ services:
 networks:
   deploy_net:
     external:
-    name: dockernet
+      name: dockernet
 
 volumes:
   nginx_certs:
