@@ -50,6 +50,7 @@ _setup() {
         touch $ENV_FILE
     fi
 
+    _set_variable 'AQUARIUM_VERSION' '2.8.0'
     _set_variable 'APP_CNAME' $1
     _set_variable 'APP_PUBLIC_PORT' $2
     _set_variable 'S3_CNAME' $3
